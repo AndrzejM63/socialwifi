@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Django RSS</title>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+    <!--<link rel="stylesheet" type="text/css" href="/static/styles.css" >-->
+    <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+
+
+<div class="container-fluid">
+        {% block content %}
+        {% endblock %}
+</div>
+</body>
+</html>
