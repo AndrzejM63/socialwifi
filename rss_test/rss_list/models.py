@@ -7,7 +7,7 @@ from django.db import models
 class Feed(models.Model):
     link = models.CharField(max_length=200, primary_key=True)
     title = models.CharField(max_length=200, blank=False)
-    pub_date = models.DateTimeField(auto_now=True, blank=False)
+    pub_date = models.DateTimeField()
 
     def __str__(self):
         return self.title

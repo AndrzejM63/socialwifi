@@ -5,6 +5,7 @@
     <table id="feeds">
         {% for rss in rss_list %}
             <tr>
+                <td>Published on {{ rss.pub_date }}:</td>
                 <td><a href="{{ rss.link }}">{{ rss.title }}</a></td>
             </tr>
         {% endfor %}

@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import feedparser
 import ssl
 
@@ -16,9 +16,11 @@ def parseRSS(rss_url):
 
 def to_date(value):
     try:
-        return datetime.strptime(value, "%a, %d %b %Y %H:%M:%S %z")
+        t = datetime.datetime.strptime(value, "%a, %d %b %Y %H:%M:%S %z")
     except ValueError:
-        raise ValueError("invalid date %s" % value)
+        t = datetime.datetime.now()
+    naive = t.replace(tzinfo=None)    # this is because of MySQL connector bug = MySQL do not support timezone
+    return naive
 
 
 def store_single_feed(item):
