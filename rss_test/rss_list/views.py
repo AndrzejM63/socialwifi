@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic import ListView
 
-from rss_test.rss_list.models import Feed
+from rss_list.models import Feed
 
 
 class RssListView(ListView):

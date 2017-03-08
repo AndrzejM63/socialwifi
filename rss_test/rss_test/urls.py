@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from rss_test.rss_list.views import RssListView
+from rss_list.views import RssListView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
