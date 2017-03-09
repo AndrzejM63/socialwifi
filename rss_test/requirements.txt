@@ -2,7 +2,9 @@ appdirs==1.4.2
 Django==1.10.6
 django-bootstrap3==8.2.1
 feedparser==5.2.1
+freezegun==0.3.8
 mysql-connector==2.1.4
 packaging==16.8
 pyparsing==2.2.0
+python-dateutil==2.6.0
 six==1.10.0
