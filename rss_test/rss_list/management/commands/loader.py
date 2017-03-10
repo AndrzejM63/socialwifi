@@ -1,8 +1,8 @@
 import datetime
 import feedparser
 import ssl
+from urllib import request
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import BaseCommand
 from rss_list.models import Feed
 
@@ -10,8 +10,13 @@ from rss_list.models import Feed
 # usage: python manage.py loader
 
 
-def parseRSS(rss_url):
-    return feedparser.parse(rss_url)
+def parse_rss(rss_url):
+    if hasattr(ssl, '_create_unverified_context'):
+        context = ssl._create_unverified_context()
+        handlers = [request.HTTPSHandler(context=context)]
+    else:
+        handlers = []
+    return feedparser.parse(rss_url, handlers=handlers)
 
 
 def to_date(value):
@@ -24,21 +29,16 @@ def to_date(value):
 
 
 def store_single_feed(item):
-    try:
-        f = Feed.objects.get(link=item['link'])
-    except ObjectDoesNotExist:
-        f = Feed(title=item['title'], link=item['link'], pub_date=to_date(item['published']))
-        f.save()
-        return 1 # 'success'
-    return 0     # 'feed already in database'
+    _, created = Feed.objects.get_or_create(
+        link=item['link'],
+        defaults={'title': item['title'], 'pub_date': to_date(item['published'])},
+    )
+    return created
 
 
 # Function grabs the rss feed headlines (titles, links, published dates) and save each to database
-def getHeadlinesAndSave(rss_url):
-
-    if hasattr(ssl, '_create_unverified_context'):
-        ssl._create_default_https_context = ssl._create_unverified_context
-    feed = parseRSS(rss_url)
+def get_headlines_and_save(rss_url):
+    feed = parse_rss(rss_url)
     counter = 0
     for newsitem in feed['items']:
         counter += store_single_feed(newsitem)
@@ -46,7 +46,7 @@ def getHeadlinesAndSave(rss_url):
 
 
 # List of RSS feeds that we will fetch and combine
-newsurls = {
+NEWS_URLS = {
     'djangonews': 'https://www.djangoproject.com/rss/weblog/',
 }
 
@@ -54,7 +54,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Iterate over the feed urls
         counter = 0
-        for key, url in newsurls.items():
-            counter += getHeadlinesAndSave(url)
+        for url in NEWS_URLS.values():
+            counter += get_headlines_and_save(url)
 
         self.stdout.write(self.style.SUCCESS('Successfully added "%s" feeds' % counter))

@@ -15,20 +15,24 @@ feed3 = { 'title': 'c', 'link': 'd', 'published': 'Wed, 01 May 2017 07:25:58 -06
 # incorrect feeds
 feed_wrong_date = { 'title': 'c', 'link': 'e', 'published': 'Wed, 31 Feb 2017 07:25:58 -0600'}
 feed_empty_date = { 'title': 'd', 'link': 'f', 'published': ''}
-feed_naive_date = { 'title': 'e', 'link': 'g', 'published': 'Wed, 31 Feb 2017 07:25:58'}
+feed_naive_date = { 'title': 'e', 'link': 'g', 'published': 'Wed, 28 Feb 2017 07:25:58'}
 
 class DateStringConvertionToDatetimeCase(TestCase):
     def test_expected_date_format_strings(self):
         self.assertEqual(to_date(feed1['published']),
                          datetime.datetime.strptime(feed1['published'], "%a, %d %b %Y %H:%M:%S %z").replace(tzinfo=None))
 
-    def test_unexpected_date_format_strings(self):
-        freezer = freeze_time("2017-03-09")
-        freezer.start()
-        self.assertEqual(to_date(feed_wrong_date['published']), datetime.datetime.now(tz=None))
-        self.assertEqual(to_date(feed_empty_date['published']), datetime.datetime.now(tz=None))
-        self.assertEqual(to_date(feed_naive_date['published']), datetime.datetime.now(tz=None))
-        freezer.stop()
+    def test_wrong_date(self):
+        with freeze_time("2017-03-09"):
+            self.assertEqual(to_date(feed_wrong_date['published']), datetime.datetime.now(tz=None))
+
+    def test_empty_date(self):
+        with freeze_time("2017-03-09"):
+            self.assertEqual(to_date(feed_empty_date['published']), datetime.datetime.now(tz=None))
+
+    def test_naive_date(self):
+        with freeze_time("2017-03-09"):
+            self.assertEqual(to_date(feed_naive_date['published']), datetime.datetime.now(tz=None))
 
 
 class FeedTestCase(TestCase):
@@ -38,7 +42,9 @@ class FeedTestCase(TestCase):
 
     def test_adding_single_feeds(self):
         # add new feed3 to database
-        self.assertEqual(store_single_feed(feed3), 1)
+        self.assertTrue(store_single_feed(feed3))
+
+    def test_adding_existing_feeds(self):
         # add existing feed3 to database
-        self.assertEqual(store_single_feed(feed3), 0)
+        self.assertFalse(store_single_feed(feed1))
 

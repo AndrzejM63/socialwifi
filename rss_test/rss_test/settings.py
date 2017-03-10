@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')go43wvhz@l57-kim63i7-_gbn5e8^k98xp@e@^#=$66a+*c@e'
+SECRET_KEY = os.environ['RSS_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'rss_test',
         'ENGINE': 'mysql.connector.django',
         'USER': 'root',
-        'PASSWORD': 'kolecwdupie',
+        'PASSWORD': os.environ['RSS_DATABASE_PASSWORD'],
         'OPTIONS': {
                     'autocommit': True,
         },
