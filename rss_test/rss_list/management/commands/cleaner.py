@@ -9,6 +9,6 @@ from rss_list.models import Feed
 class Command(BaseCommand):
     def handle(self, *args, **options):
         f = Feed.objects.all()
-        counter = len(f)
-        f.delete()
+        _, deleted_dict = f.delete()
+        counter = deleted_dict['rss_list.Feed']
         self.stdout.write(self.style.SUCCESS('Successfully deleted "%s" feeds' % counter))
